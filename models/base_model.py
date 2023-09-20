@@ -43,8 +43,8 @@ class BaseModel:
     def to_dict(self):
         """Convert instance into dict format"""
         dictionary  = self.__dict__.copy()
-        dictionary ["__class__"] = str(type(self).__name__)
-        dictionary ["created_at"] = self.created_at.isoformat()
-        dictionary ["updated_at"] = self.updated_at.isoformat()
-        dictionary .pop("_sa_instance_state", None)
+        dictionary["__class__"] = str(type(self).__name__)
+        dictionary["created_at"] = self.created_at.isoformat()
+        dictionary["updated_at"] = self.updated_at.isoformat()
+        dictionary.pop("_sa_instance_state", None)
         return dictionary
