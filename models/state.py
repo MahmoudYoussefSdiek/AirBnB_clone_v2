@@ -3,7 +3,7 @@ import models
 from os import getenv
 from models.base_model import BaseModel ,Base
 from models.city import City
-from sqlalchemy import Column, string
+from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
 """ State Module for HBNB project """
