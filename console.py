@@ -1,7 +1,5 @@
 #!/usr/bin/python3
-""" Console Module
-    change test
-"""
+""" Console Module """
 import cmd
 import sys
 from models.base_model import BaseModel
@@ -12,7 +10,7 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
-from shlex import split
+
 
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
@@ -21,16 +19,16 @@ class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) ' if sys.__stdin__.isatty() else ''
 
     classes = {
-               'BaseModel': BaseModel, 'User': User, 'Place': Place,
-               'State': State, 'City': City, 'Amenity': Amenity,
-               'Review': Review
-              }
+        'BaseModel': BaseModel, 'User': User, 'Place': Place,
+        'State': State, 'City': City, 'Amenity': Amenity,
+        'Review': Review
+    }
     dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
     types = {
-             'number_rooms': int, 'number_bathrooms': int,
-             'max_guest': int, 'price_by_night': int,
-             'latitude': float, 'longitude': float
-            }
+        'number_rooms': int, 'number_bathrooms': int,
+        'max_guest': int, 'price_by_night': int,
+        'latitude': float, 'longitude': float
+    }
 
     def preloop(self):
         """Prints if isatty is false"""
@@ -115,50 +113,33 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-    def do_create(self, args):
-        """ Create an object of any class"""
+    def do_create(self, arg):
+        """Creates a new instance of BaseModel, saves it to the JSON file and
+        prints the id"""
+        args = arg.split()
         if not args:
             print("** class name missing **")
             return
-
-        args_list = args.split()
-        class_name = args_list[0]
-        params = args_list[1:]
-
-        if class_name not in HBNBCommand.classes:
+        if args[0] not in self.classes:
             print("** class doesn't exist **")
             return
-
-        new_instance = HBNBCommand.classes[class_name]()
-
-        for param in params:
-            key_value = param.split('=')
-            if len(key_value) != 2:
-                continue
-            key, value = key_value
-
-            if value.startswith('"') and value.endswith('"'):
-                value = value[1:-1].replace('_', ' ')
-            elif '.' in value:
-                try:
-                    value = float(value)
-                except ValueError:
-                    continue
+        kwargs = {}
+        for arg in args[1:]:
+            key, val = arg.split('=')
+            if val[0] == '"' and val[-1] == '"':
+                val = val[1:-1].replace('_', ' ')
             else:
                 try:
-                    value = int(value)
+                    val = int(val)
                 except ValueError:
-                    continue
-
-            setattr(new_instance, key, value)
-
-        storage.save()
-        print(new_instance.id)
-
-    def help_create(self):
-        """ Help information for the create method """
-        print("Creates a class of any type")
-        print("[Usage]: create <className>\n")
+                    try:
+                        val = float(val)
+                    except ValueError:
+                        continue
+            kwargs[key] = val
+        obj = self.classes[args[0]](**kwargs)
+        obj.save()
+        print(obj.id)
 
     def do_show(self, args):
         """ Method to show an individual object """
@@ -216,7 +197,7 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         try:
-            del(storage.all()[key])
+            del (storage.all()[key])
             storage.save()
         except KeyError:
             print("** no instance found **")
