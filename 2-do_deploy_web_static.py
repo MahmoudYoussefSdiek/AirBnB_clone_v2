@@ -14,10 +14,10 @@ def do_deploy(archive_path):
     Args:
         archive_path (str): The path of the archive to distribute.
     """
-    if not os.path.isfile(archive_path):
+    if os.path.isfile(archive_path) is False:
         return False
-    file = os.path.basename(archive_path)
-    name = os.path.splitext(file)[0]
+    file = archive_path.split("/")[-1]
+    name = file.split(".")[0]
 
     if put(archive_path, "/tmp/{}".format(file)).failed is True:
         return False
@@ -43,5 +43,4 @@ def do_deploy(archive_path):
     if run("ln -s /data/web_static/releases/{}/ /data/web_static/current".
            format(name)).failed is True:
         return False
-
     return True
