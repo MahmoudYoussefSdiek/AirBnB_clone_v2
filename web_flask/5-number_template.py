@@ -8,7 +8,7 @@ Routes:
     /python/<text>: Displays 'Python' followed by the value of <text>.
     /number/<int:n>: Displays 'n is a number'
 """
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
